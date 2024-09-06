@@ -1511,11 +1511,11 @@
 			else if(c=='l') sim.omega_l.slider.find('.ui-slider-handle').focus();
 			else if(c=='i') window.location.href = switchHash();
 			else if(c=='f') sim.ps.toggleFullScreen();
-			else if(c=='o') {
+			else if(c=='1') {
 				sim.omega_b.setValue(sim.omega_b.value-0.025);
 				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
 			}
-			else if(c=='p') {
+			else if(c=='2') {
 				sim.omega_b.setValue(sim.omega_b.value+0.025);
 				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
 			}
