@@ -132,6 +132,12 @@
 		return;
 	}
 
+	// Move the slider left by 1 step
+	ParameterSlider.prototype.moveLeft = function(){
+		this.updateOptsByIndex(this.index+1);
+		return;
+	}
+
 	// A class to create and display a power spectrum
 	// inp = {
 	//	ps: 'powerspectrum' // ID of the HTML element for the plot
@@ -1505,6 +1511,30 @@
 			else if(c=='l') sim.omega_l.slider.find('.ui-slider-handle').focus();
 			else if(c=='i') window.location.href = switchHash();
 			else if(c=='f') sim.ps.toggleFullScreen();
+			else if(c=='1') {
+				sim.omega_b.setValue(sim.omega_b.value-0.025);
+				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
+			}
+			else if(c=='2') {
+				sim.omega_b.setValue(sim.omega_b.value+0.025);
+				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
+			}
+			else if(c=='3') {
+				sim.omega_c.setValue(sim.omega_c.value-0.025);
+				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
+			}
+			else if(c=='4') {
+				sim.omega_c.setValue(sim.omega_c.value+0.025);
+				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
+			}
+			else if(c=='5') {
+				sim.omega_l.setValue(sim.omega_l.value-0.025);
+				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
+			}
+			else if(c=='6') {
+				sim.omega_l.setValue(sim.omega_l.value+0.025);
+				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
+			}
 		});
 	
 		// Bind window resize event for when people change the size of their browser
