@@ -15,7 +15,9 @@ Requires:
 
 Written by Stuart Lowe & Chris North
 
-**New**: Now translated into French at https://github.com/vincentpoireau/planckapps
+Modified by Anh Vu Phan
+
+Link: Visit the webapp at https://github.com/vincentpoireau/planckapps
 
 CMB Widget
 ----------
