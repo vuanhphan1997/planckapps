@@ -13,11 +13,9 @@ Requires:
  - To run locally, ensure browser can access local files
    - e.g. for Chrome, set flag --allow-file-access-from-files
 
-Written by Stuart Lowe & Chris North
+Written by Stuart Lowe & Chris North. Modified by Anh Vu Phan
 
-Modified by Anh Vu Phan
-
-Link: Visit the webapp at https://github.com/vincentpoireau/planckapps
+**Link**: Visit the webapp at https://github.com/vincentpoireau/planckapps
 
 CMB Widget
 ----------
