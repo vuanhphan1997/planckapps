@@ -15,7 +15,7 @@ Requires:
 
 Written by Stuart Lowe & Chris North. Modified by Anh Vu Phan
 
-**Link**: Visit the webapp at [https://github.com/vincentpoireau/planckapps](https://vuanhphan1997.github.io/planckapps/Simulator/)
+**Link**: Visit the webapp at [https://vuanhphan1997.github.io/planckapps/Simulator/](https://vuanhphan1997.github.io/planckapps/Simulator/)
 
 CMB Widget
 ----------
