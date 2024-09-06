@@ -14,6 +14,7 @@ Requires:
    - e.g. for Chrome, set flag --allow-file-access-from-files
 
 Originally written by Stuart Lowe & Chris North
+
 Modified by Anh Vu Phan
 
 **Link**: Visit the webapp at [https://github.com/vincentpoireau/planckapps](https://vuanhphan1997.github.io/planckapps/Simulator/)
