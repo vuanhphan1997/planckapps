@@ -219,7 +219,7 @@
 			},
 			'xaxis': {
 				'invert': true,
-				'min': 1.5,
+				'min': 15,//1.5,
 				'max': 3000,
 				'label': {
 					'color': co,
@@ -295,6 +295,7 @@
 
 		// Get the ell character
 		var ell = $("<div>").html('&#8467;').text();
+		var sub_ell = $("<div>").html('<sub>&#8467;</sub>').text();
 		var deg = $("<div>").html('&deg;').text();
 
 		// Draw the axes
@@ -302,7 +303,7 @@
 
 		// Draw the axes labels
 		this.chart.xLabel = this.chart.holder.text(l + w/2, t + h + b*0.5, "Scale on the sky").attr({fill: (this.opts.xaxis.label.color ? this.opts.xaxis.label.color : "black"),'font-size': this.opts.font,'font-family': this.opts.xaxis.label.font });
-		this.chart.yLabel = this.chart.holder.text(l*0.5, t+(h/2), "Anisotropy "+ell+"("+ell+"+1) C"+ell+"").attr({fill: (this.opts.yaxis.label.color ? this.opts.yaxis.label.color : "black"),'font-size': this.opts.font,'font-family': this.opts.yaxis.label.font }).rotate(270);
+		this.chart.yLabel = this.chart.holder.text(l*0.5, t+(h/2), "Anisotropy "+ell+"*("+ell+"+1)*C["+sub_ell+"]").attr({fill: (this.opts.yaxis.label.color ? this.opts.yaxis.label.color : "black"),'font-size': this.opts.font,'font-family': this.opts.yaxis.label.font }).rotate(270);
 
 		// Draw angular labels on chart
 		if(this.opts.xaxis.ticks){
@@ -1688,15 +1689,32 @@
 			this.cosmos.compute(this.omega_b.value, this.omega_c.value, this.omega_l.value);
 			var goldilocks = "just right";
 			var age = parseFloat(this.cosmos.age_Gyr.toFixed(1));
-			if(age > 13.8) goldilocks = "too old";
-			if(age < 13.8) goldilocks = "too young";
+			if(age > 13.8) goldilocks = "<b>too old</b>";
+			if(age < 13.8) goldilocks = "<b>too young</b>";
+			if(age < 13.6) goldilocks += ". <span  style='color: #bebebe'>Younger than our Milky Way galaxy!</span>";
 			$('#age').html('<span class="age property">'+age+'</span> billion years old - '+goldilocks);
 		}
 		if($('#curvature')){
 			var tot = this.omega_b.value + this.omega_c.value + this.omega_l.value;
-			$('#curvature').html('<span class="property curvature">'+((tot > 1) ? 'closed' : (tot < 1) ? 'open' : 'flat')+'</span> universe');
+			var curvature = 1 - tot;
+			if(tot > 1) curvature = Math.max((1 - tot)/2,-1);
+			if(tot < 1) curvature = Math.min(1 - tot,1);
+			if(curvature.toFixed(1) == 0) curvature = 0;
+			var include_curvature = '<img src="media/img/curvature/curvature'+curvature.toFixed(1)+'.png" width="50" height="50">';
+			$('#curvature').html('<span class="property curvature">'+((tot > 1) ? 'closed' : (tot < 1) ? 'open' : 'flat')+'</span> universe '+include_curvature+',');
 			if(tot == 1) $('.button.flatten').hide();
 			else $('.button.flatten').show();
+		}
+		if($('#matter_energy')){
+			var tot = this.omega_b.value + this.omega_c.value + this.omega_l.value;
+			var baryon_percent = this.omega_b.value/tot*100;
+			var dark_matter_percent = this.omega_c.value/tot*100;
+			var dark_energy_percent = this.omega_l.value/tot*100;
+			var baryon_content = "<span  style='color: #F89406'><b>" + baryon_percent.toFixed(1) + "% normal matter</b></span >, ";
+			var DM_content = "<span  style='color: #049CDB'><b>" + dark_matter_percent.toFixed(1) + "% dark matter</b></span >, ";
+			var dark_energy_content = "<span  style='color: #46a546'><b>" + dark_energy_percent.toFixed(1) + "% dark energy</b></span >.";
+			var content = baryon_content + DM_content + dark_energy_content;
+			$('#matter_energy').html('with '+content);
 		}
 		if($('#similarity')){
 			var sim = this.similarity([this.omega_b.value,this.omega_c.value,this.omega_l.value],[this.our.omega_b,this.our.omega_c,this.our.omega_l]);
