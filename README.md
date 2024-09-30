@@ -31,12 +31,13 @@ Written by Bob Watson
 
 Keyboard shortcuts
 ------------------
- - 'a':      toggle power spectrum
- - 'b':      focus on 'Normal Matter' slider
- - 'c':      focus on 'Dark Matter' slider
- - 'l':      focus on 'Dark Energy' slider
- - 'i':      toggle info panel
- - 'f':      toggle fullscreen
- - '1','2':  move 'Normal matter' slider left,right
- - '3','4':  move 'Dark matter' slider left,right
- - '5','6':  move 'Dark Energy' slider left,right
+ - 'a':                 toggle power spectrum
+ - 'b':                 focus on 'Normal Matter' slider
+ - 'c':                 focus on 'Dark Matter' slider
+ - 'l':                 focus on 'Dark Energy' slider
+ - 'i':                 toggle info panel
+ - 'f':                 toggle fullscreen
+ - '1','2':             move 'Normal matter' slider left,right
+ - '3','4':             move 'Dark matter' slider left,right
+ - '5','6':             move 'Dark Energy' slider left,right
+ - 'u','d':             move up/down between sliders
