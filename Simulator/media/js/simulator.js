@@ -1559,7 +1559,7 @@
 				sim.omega_l.setValue(sim.omega_l.value+0.025);
 				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
 			}
-			else if(c=='u') {
+			else if(c=='d') {
 				if (slider_chosen == 0){
 					sim.omega_b.slider.find('.ui-slider-handle').focus();
 					slider_chosen = 1;
@@ -1577,7 +1577,7 @@
 					slider_chosen = 1;
 				}
 			}
-			else if(c=='d') {
+			else if(c=='u') {
 				if (slider_chosen == 0){
 					sim.omega_b.slider.find('.ui-slider-handle').focus();
 					slider_chosen = 1;
