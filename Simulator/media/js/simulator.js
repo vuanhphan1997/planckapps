@@ -1366,6 +1366,8 @@
 		this.exhibition = true;
 		this.fs = parseInt($('body').css('font-size'));
 
+		var slider_chosen = 0;	// 0 for un-initialized, 1 for normal matter, 2 for dark matter, 3 for dark energy
+
 		if(this.exhibition && $('body').width() > 1200){
 			this.fs = parseInt(this.fs*$('body').width()/1200);
 			if($('body').width() > 1000) $('body').css({'font-size':this.fs+'px'});
@@ -1556,6 +1558,42 @@
 			else if(c=='6') {
 				sim.omega_l.setValue(sim.omega_l.value+0.025);
 				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
+			}
+			else if(c=='u') {
+				if (slider_chosen == 0){
+					sim.omega_b.slider.find('.ui-slider-handle').focus();
+					slider_chosen = 1;
+				}
+				else if (slider_chosen == 1){
+					sim.omega_c.slider.find('.ui-slider-handle').focus();
+					slider_chosen = 2;
+				}
+				else if (slider_chosen == 2){
+					sim.omega_l.slider.find('.ui-slider-handle').focus();
+					slider_chosen = 3;
+				}
+				else if (slider_chosen == 3){
+					sim.omega_b.slider.find('.ui-slider-handle').focus();
+					slider_chosen = 1;
+				}
+			}
+			else if(c=='d') {
+				if (slider_chosen == 0){
+					sim.omega_b.slider.find('.ui-slider-handle').focus();
+					slider_chosen = 1;
+				}
+				else if (slider_chosen == 1){
+					sim.omega_l.slider.find('.ui-slider-handle').focus();
+					slider_chosen = 3;
+				}
+				else if (slider_chosen == 2){
+					sim.omega_b.slider.find('.ui-slider-handle').focus();
+					slider_chosen = 1;
+				}
+				else if (slider_chosen == 3){
+					sim.omega_c.slider.find('.ui-slider-handle').focus();
+					slider_chosen = 2;
+				}
 			}
 		});
 
