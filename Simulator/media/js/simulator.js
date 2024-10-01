@@ -1804,9 +1804,11 @@
 			$('#similarity').html('Universe similarity <span class="similarity property">'+Math.round(sim*100)+'%</span> - '+txt+'');
 		}
 		if($('#won')){
-			var won = (this.omega_b.value == this.our.omega_b && this.omega_c.value == this.our.omega_c && this.omega_l.value == this.our.omega_l);
-			if(won) $('#won').show();
-			else $('#won').hide();
+			if (this.omega_b.value == this.our.omega_b && this.omega_c.value == this.our.omega_c && this.omega_l.value == this.our.omega_l) {
+				 $('#won').show();
+				 document.activeElement.blur();
+			}
+			else { $('#won').hide() };
 		}
 
 		$('span.omega_b').html(' = '+this.omega_b.value);
