@@ -284,25 +284,34 @@ a.button:hover, a.button:focus { background-color: #ffc40d; color: black; transi
 	#options a.button:first-child { margin-top: 0px; }
 }
 
-/* For rotating images 
-.rotate {
-	animation: rotate 3s infinite linear;
-	-moz-animation: rotate 3s infinite linear;
-	-webkit-animation: rotate 3s infinite linear;
-  }
-  
-  @keyframes rotate {	0% {transform: rotate(0deg);}
-	100% {
-	  transform: rotate(360deg);
-	}
-  }*/
-.rotate {
-	-webkit-transform: rotate(0deg);
-	-moz-transform: rotate(0deg);
-	-o-transform: rotate(0deg);
-	-ms-transform: rotate(0deg);
-	transform: rotate(0deg);
+/* For win screens */
+.overlay {
+    z-index: 10;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0,0,0,.4);
 }
-/* .spin {
-	transform: rotate(45deg);
-} */
+
+.overlay-inner {
+    height: 80%; /* Set your own height: percents, ems, whatever! */
+    width: 20%; /* Set your own width: percents, ems, whatever! */
+    /* overflow: auto; /* Recommended in case content is larger than the container */
+    margin: auto; /* Center the item vertically & horizontally */
+    position: absolute; /* Break it out of the regular flow */
+    top: 0; left: 0; bottom: 0; right: 0; /* Set the bounds in which to center it, relative to its parent/container */
+    /* background: rgba(0,0,0,.4); */
+}
+
+.overlay-inner2 {
+    z-index: 20;
+    height: 10%; /* Set your own height: percents, ems, whatever! */
+    width: 20%; /* Set your own width: percents, ems, whatever! */
+    /* overflow: auto; /* Recommended in case content is larger than the container */
+    margin: auto; /* Center the item vertically & horizontally */
+    position: absolute; /* Break it out of the regular flow */
+    top: 0; left: 0; bottom: 0; right: 0; /* Set the bounds in which to center it, relative to its parent/container */
+    /* background: rgba(0,0,0,.4); */
+}

@@ -1793,40 +1793,6 @@
 			else if (rotation_speed < current_rotation_speed) {
 				$('#rotation_curve').html('Galaxies spin <b>too slow</b>\t'+img_content);
 			}
-
-			// $rota.click(function(){
-			// 	var $this = $(this);
-			// 	count = count + 1
-		
-			// 	$this.data('rotating', setInterval(function(){
-			// 		var degree = $this.data('degree') || 0;
-			// 		$('#text').html(degree)
-			// 		if(degree === 361){
-			// 			//clearInterval($this.data('rotating'));
-			// 			$this.data('rotating', false);
-			// 			$this.data('degree', 0);
-			// 			return;
-			// 		}
-			// 		$this.css({ transform: 'rotate(' + degree + 'deg)'});
-			// 		if (count < 3) {degree = degree+0.5}
-			// 		else {degree = degree - 1}
-			// 		$this.data('degree', degree)
-			// 	}, 5));
-				
-			// });
-			// $('img').each(function() {
-			// 	var deg = $(this).data('rotate') || 0;
-			// 	var rotate = 'rotate(' + $(this).data('rotate')+45 + 'deg)';
-			// 	$(this).css({ 
-			// 		'-webkit-transform': rotate,
-			// 		'-moz-transform': rotate,
-			// 		'-o-transform': rotate,
-			// 		'-ms-transform': rotate,
-			// 		'transform': rotate 
-			// 	});
-			// });
-			
-			// $('#rotation_curve').html('Hi. <img id="rotating-galaxy" src="media/img/ouruniverse.jpg" class="spin" data-speed="'+rotation_speed.toFixed(3)+'" width="50" height="50">');
 		}
 		if($('#similarity')){
 			var sim = this.similarity([this.omega_b.value,this.omega_c.value,this.omega_l.value],[this.our.omega_b,this.our.omega_c,this.our.omega_l]);
@@ -1836,6 +1802,11 @@
 			if(sim > 0.94) txt = "very similar to our universe";
 			if(sim == 1) txt = "the same as our universe";
 			$('#similarity').html('Universe similarity <span class="similarity property">'+Math.round(sim*100)+'%</span> - '+txt+'');
+		}
+		if($('#won')){
+			var won = (this.omega_b.value == this.our.omega_b && this.omega_c.value == this.our.omega_c && this.omega_l.value == this.our.omega_l);
+			if(won) $('#won').show();
+			else $('#won').hide();
 		}
 
 		$('span.omega_b').html(' = '+this.omega_b.value);
