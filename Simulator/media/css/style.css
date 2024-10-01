@@ -284,3 +284,25 @@ a.button:hover, a.button:focus { background-color: #ffc40d; color: black; transi
 	#options a.button:first-child { margin-top: 0px; }
 }
 
+/* For rotating images 
+.rotate {
+	animation: rotate 3s infinite linear;
+	-moz-animation: rotate 3s infinite linear;
+	-webkit-animation: rotate 3s infinite linear;
+  }
+  
+  @keyframes rotate {	0% {transform: rotate(0deg);}
+	100% {
+	  transform: rotate(360deg);
+	}
+  }*/
+.rotate {
+	-webkit-transform: rotate(0deg);
+	-moz-transform: rotate(0deg);
+	-o-transform: rotate(0deg);
+	-ms-transform: rotate(0deg);
+	transform: rotate(0deg);
+}
+/* .spin {
+	transform: rotate(45deg);
+} */

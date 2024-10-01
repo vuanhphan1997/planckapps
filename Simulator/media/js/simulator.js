@@ -1645,6 +1645,29 @@
     		sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
 		});
 
+		
+		// For rotating galaxy
+		var degree = 0.0;
+		setInterval(function(){
+			var el = document.getElementById("rotating-galaxy");
+			var speed = Number(el.dataset.speed);
+			if(degree > 360){
+				degree = degree - 360;
+				return;
+			}
+			if(degree < 0){
+				degree = degree + 360;
+				return;
+			}
+			el.style.webkitTransform = 'rotate(' + degree + 'deg)';
+			el.style.mozTransform = 'rotate(' + degree + 'deg)';
+			el.style.msTransform = 'rotate(' + degree + 'deg)';
+			el.style.oTransform = 'rotate(' + degree + 'deg)';
+			el.style.transform = 'rotate(' + degree + 'deg)';
+			degree = degree + speed;
+			return;
+		}, 1);
+
 		// Update labels, buttons etc
 		this.update();
 
@@ -1753,6 +1776,57 @@
 			var dark_energy_content = "<span  style='color: #46a546'><b>" + dark_energy_percent.toFixed(1) + "% dark energy</b></span >.";
 			var content = baryon_content + DM_content + dark_energy_content;
 			$('#matter_energy').html('with '+content);
+		}
+		if($('#rotation_curve')){
+			var omegab = this.omega_b.value;
+			var omegac = this.omega_c.value;
+			var current_rotation_speed = 0.7;
+			var rotation_speed = current_rotation_speed*Math.sqrt(omegab + omegac)/Math.sqrt(this.our.omega_b + this.our.omega_c);	// accurate 
+			var rotation_speed = current_rotation_speed*(omegab + omegac)/(this.our.omega_b + this.our.omega_c);	// false, but more fun
+			var img_content = '<img id="rotating-galaxy" src="media/img/Galaxy-2.svg" class="spin" data-speed="'+rotation_speed.toFixed(3)+'" width="50" height="50">';
+			if (rotation_speed == current_rotation_speed || (omegab == this.our.omega_b && omegac == this.our.omega_c)) {
+				$('#rotation_curve').html('Galaxies spin <b>just right</b>\t'+img_content);
+			}
+			else if (rotation_speed > current_rotation_speed) {
+				$('#rotation_curve').html('Galaxies spin <b>too fast</b>\t'+img_content);
+			}
+			else if (rotation_speed < current_rotation_speed) {
+				$('#rotation_curve').html('Galaxies spin <b>too slow</b>\t'+img_content);
+			}
+
+			// $rota.click(function(){
+			// 	var $this = $(this);
+			// 	count = count + 1
+		
+			// 	$this.data('rotating', setInterval(function(){
+			// 		var degree = $this.data('degree') || 0;
+			// 		$('#text').html(degree)
+			// 		if(degree === 361){
+			// 			//clearInterval($this.data('rotating'));
+			// 			$this.data('rotating', false);
+			// 			$this.data('degree', 0);
+			// 			return;
+			// 		}
+			// 		$this.css({ transform: 'rotate(' + degree + 'deg)'});
+			// 		if (count < 3) {degree = degree+0.5}
+			// 		else {degree = degree - 1}
+			// 		$this.data('degree', degree)
+			// 	}, 5));
+				
+			// });
+			// $('img').each(function() {
+			// 	var deg = $(this).data('rotate') || 0;
+			// 	var rotate = 'rotate(' + $(this).data('rotate')+45 + 'deg)';
+			// 	$(this).css({ 
+			// 		'-webkit-transform': rotate,
+			// 		'-moz-transform': rotate,
+			// 		'-o-transform': rotate,
+			// 		'-ms-transform': rotate,
+			// 		'transform': rotate 
+			// 	});
+			// });
+			
+			// $('#rotation_curve').html('Hi. <img id="rotating-galaxy" src="media/img/ouruniverse.jpg" class="spin" data-speed="'+rotation_speed.toFixed(3)+'" width="50" height="50">');
 		}
 		if($('#similarity')){
 			var sim = this.similarity([this.omega_b.value,this.omega_c.value,this.omega_l.value],[this.our.omega_b,this.our.omega_c,this.our.omega_l]);
