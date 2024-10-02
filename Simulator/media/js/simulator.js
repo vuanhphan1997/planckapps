@@ -171,8 +171,8 @@
 		// Load the initial data
 		this.loadData("omega_b",inp.omega_b,inp.omega_c,inp.omega_l);
 
-		// Hide it initially
-		this.el.toggleClass('hidden');
+		// // Hide it initially
+		// this.el.toggleClass('hidden');
 
 		// Bind window resize event for when people change the size of their browser
 		$(window).on("resize",{me:this},function(ev){
@@ -1418,6 +1418,7 @@
 
 		// Keep a copy of the starting values
 		this.our = { omega_b: 0.050, omega_c: 0.275, omega_l: 0.675, firstpeak: 220,firstpeakamp: 5291.5 };
+		this.thisround = { omega_b: this.omega_b.value, omega_c: this.omega_c.value, omega_l: this.omega_l.value };
 
 		// Hide the About section if we aren't at that anchor
 		if(location.hash.substring(1) != "about"){
@@ -1455,7 +1456,7 @@
 				sim.omega_l.setValue(sim.our.omega_l);
 				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
 			}),
-			$('<a class="button matteronly" href="#">Normal matter only</a>').on('click',{me:this},function(e){
+			$('<a class="button matteronly" href="#" style="background-color: #E13F29">Normal matter only</a>').on('click',{me:this},function(e){
 				e.preventDefault();
 				var sim = e.data.me;
 				//sim.omega_b.setValue(0.20);
@@ -1463,7 +1464,7 @@
 				sim.omega_l.setValue(0.00);
 				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
 			}),
-			$('<a class="button flatten" href="#">Flatten</a>').on('click',{me:this},function(e){
+			$('<a class="button flatten" href="#" style="background-color: #ffc40d">Flatten</a>').on('click',{me:this},function(e){
 				e.preventDefault();
 				var sim = e.data.me;
 				var ob = sim.omega_b.value;
@@ -1486,6 +1487,14 @@
 						sim.omega_b.setValue(1-oc-ol);
 					}else sim.omega_c.setValue(1-ob);
 				}
+				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
+			}),
+			$('<a class="button restart" href="#" style="background-color: #46a546">Restart</a>').on('click',{me:this},function(e){
+				e.preventDefault();
+				var sim = e.data.me;
+				sim.omega_b.setValue(sim.thisround.omega_b);
+				sim.omega_c.setValue(sim.thisround.omega_c);
+				sim.omega_l.setValue(sim.thisround.omega_l);
 				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
 			})
 		);
@@ -1605,6 +1614,49 @@
 					slider_chosen = 2;
 				}
 			}
+			else if(c=='s') {
+				sim.omega_b.setRandom();
+				sim.omega_c.setRandom();
+				sim.omega_l.setRandom();
+				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
+				sim.thisround.omega_b = sim.omega_b.value;
+				sim.thisround.omega_c = sim.omega_c.value;
+				sim.thisround.omega_l = sim.omega_l.value;
+			}
+			else if(c=='n') {
+				sim.omega_c.setValue(0.00);
+				sim.omega_l.setValue(0.00);
+				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
+			}
+			else if(c=='k') {
+				var ob = sim.omega_b.value;
+				var oc = sim.omega_c.value;
+				var ol = sim.omega_l.value;
+				var tot = (ob + oc + ol);
+				if(tot > 1){
+					// Currently open
+					if(ob + oc <= 1.0){
+						// Reduce dark energy
+						sim.omega_l.setValue(1-oc-ob);
+					}else{
+						// Change Omega_c and remove dark energy
+						sim.omega_c.setValue(1-ob);
+						sim.omega_l.setValue(0.000);
+					}
+				}else if(tot < 1){
+					// Currently closed
+					if(ob + oc <= 1.0){
+						sim.omega_b.setValue(1-oc-ol);
+					}else sim.omega_c.setValue(1-ob);
+				}
+				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
+			}
+			else if(c==key_reset) {
+				sim.omega_b.setValue(sim.thisround.omega_b);
+				sim.omega_c.setValue(sim.thisround.omega_c);
+				sim.omega_l.setValue(sim.thisround.omega_l);
+				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
+			}
 		});
 
 		// Bind window resize event for when people change the size of their browser
@@ -1653,6 +1705,9 @@
             sim.omega_c.setRandom();
     		sim.omega_l.setRandom();
     		sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
+			sim.thisround.omega_b = sim.omega_b.value;
+			sim.thisround.omega_c = sim.omega_c.value;
+			sim.thisround.omega_l = sim.omega_l.value;
 		});
 
 		
@@ -1720,6 +1775,7 @@
 
 		if($('#map') && this.sky){
 			var v = Math.round(this.sky.canvas.canvas.outerWidth()/this.sky.maxang)+'px';
+			// $('#similarity').html(Number(this.sky.canvas.canvas.outerWidth()));
 			var p = ((this.sky.canvas.container.outerWidth()-this.sky.canvas.canvas.outerWidth())/2)+'px';
 			$('#map .label.scale').css({'margin-right':p,'width': v, 'height': v, 'line-height': v, 'border-radius': v });
 			$('#map .label.sim').css('margin-left',p);
@@ -1815,7 +1871,7 @@
 			if(sim > 0.75) txt = "getting more like our universe";
 			if(sim > 0.94) txt = "very similar to our universe";
 			if(sim == 1) txt = "the same as our universe";
-			$('#similarity').html('Universe similarity <span class="similarity property">'+Math.round(sim*100)+'%</span> - '+txt+'');
+			// $('#similarity').html('Universe similarity <span class="similarity property">'+Math.round(sim*100)+'%</span> - '+txt+'');
 		}
 		if($('#won')){
 			if ((this.omega_b.value == this.our.omega_b && this.omega_c.value == this.our.omega_c && this.omega_l.value == this.our.omega_l)
