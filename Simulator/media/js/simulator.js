@@ -786,6 +786,7 @@
 		this.fixedscale = (is(inp.fixedscale,"boolean")) ? inp.fixedscale : true;
 		this.showours = true;
 		this.showscale = true;
+		this.exactmatch = true;
 
 		this.w = 256,
 		this.h = 256,
@@ -1490,11 +1491,20 @@
 		);
 
 		// Set up the configuration form
-		$('#config form').append('<div class="configoption"><input type="checkbox" name="showscale" /><label for="showscale">Show angular scale</label></a></div><div class="configoption"><input type="checkbox" name="showours" /><label for="showours">Show our universe</label></a></div><div class="configoption"><input type="checkbox" name="normscale" /><label for="normscale">Normalise scale</label></div><!--<div class="configoption"><label for="colourtable">Colour scheme</label>: <select name="colourtable" id="colourtable"><option value="planck">Planck</option><option value="blackbody">Heat</option><option value="A">A</option><option value="B">B</option></select></div>-->');
+		$('#config form').append('<div class="configoption"><input type="checkbox" name="showscale" /><label for="showscale">Show angular scale</label></a></div>');
+		$('#config form').append('<div class="configoption"><input type="checkbox" name="showours" /><label for="showours">Show our universe</label></a></div>');
+		$('#config form').append('<div class="configoption"><input type="checkbox" name="normscale" /><label for="normscale">Normalise scale</label></div>');
+		$('#config form').append('<div class="configoption"><input type="checkbox" name="exactmatch" /><label for="exactmatch">Require exact match to win</label></div>');
+		$('#config form').append('<!--<div class="configoption"><label for="colourtable">Colour scheme</label>: <select name="colourtable" id="colourtable"><option value="planck">Planck</option><option value="blackbody">Heat</option><option value="A">A</option><option value="B">B</option></select></div>-->');
 		$('#config form input[name=showscale]').attr('checked',this.sky.showscale).on('click',{me:this},function(e){
 			var sim = e.data.me;
 			sim.sky.showscale = $(this).is(':checked');
 			sim.ps.toggleTicks();
+			sim.update();
+		});
+		$('#config form input[name=exactmatch]').attr('checked',this.sky.exactmatch).on('click',{me:this},function(e){
+			var sim = e.data.me;
+			sim.sky.exactmatch = $(this).is(':checked');
 			sim.update();
 		});
 		$('#config form input[name=showours]').attr('checked',this.sky.showours).on('click',{me:this},function(e){
@@ -1746,23 +1756,28 @@
 		}else{
 			$('#firstpeak').html('?');
 		}
+		this.cosmos.compute(this.omega_b.value, this.omega_c.value, this.omega_l.value);
+		var age = parseFloat(this.cosmos.age_Gyr.toFixed(1));
 		if($('#age')){
-			this.cosmos.compute(this.omega_b.value, this.omega_c.value, this.omega_l.value);
 			var goldilocks = "just right";
-			var age = parseFloat(this.cosmos.age_Gyr.toFixed(1));
 			if(age > 13.8) goldilocks = "<b>too old</b>";
 			if(age < 13.8) goldilocks = "<b>too young</b>";
 			if(age < 13.6) goldilocks += ". <span  style='color: #bebebe'>Younger than our Milky Way galaxy!</span>";
 			$('#age').html('<span class="age property">'+age+'</span> billion years old - '+goldilocks);
 		}
+		var total_omega = this.omega_b.value + this.omega_c.value + this.omega_l.value;
+		var curvature = 1 - total_omega;
+		if(total_omega > 1) curvature = Math.max((1 - total_omega)/2,-1);
+		if(total_omega < 1) curvature = Math.min(1 - total_omega,1);
+		if(curvature.toFixed(1) == 0) curvature = 0;
 		if($('#curvature')){
-			var tot = this.omega_b.value + this.omega_c.value + this.omega_l.value;
-			var curvature = 1 - tot;
-			if(tot > 1) curvature = Math.max((1 - tot)/2,-1);
-			if(tot < 1) curvature = Math.min(1 - tot,1);
-			if(curvature.toFixed(1) == 0) curvature = 0;
+			if (this.sky.exactmatch) {
+				if (total_omega > 1 && curvature == 0) curvature = -0.1;
+				if (total_omega < 1 && curvature == 0) curvature = 0.1;
+			}
 			var include_curvature = '<img src="media/img/curvature/curvature'+curvature.toFixed(1)+'.png" width="50" height="50">';
-			$('#curvature').html('<span class="property curvature">'+((tot > 1) ? 'closed' : (tot < 1) ? 'open' : 'flat')+'</span> universe '+include_curvature+',');
+			// $('#curvature').html('<span class="property curvature">'+((total_omega > 1) ? 'closed' : (total_omega < 1) ? 'open' : 'flat')+'</span> universe '+include_curvature+',');
+			$('#curvature').html('<span class="property curvature">'+((curvature < 0) ? 'closed' : (curvature > 0) ? 'open' : 'flat')+'</span> universe '+include_curvature+',');
 			if(tot == 1) $('.button.flatten').hide();
 			else $('.button.flatten').show();
 		}
@@ -1777,25 +1792,24 @@
 			var content = baryon_content + DM_content + dark_energy_content;
 			$('#matter_energy').html('with '+content);
 		}
+		var our_rotation_speed = 0.7;
+		var speed_tolerance = 0.1;
+		// var rotation_speed = our_rotation_speed*Math.sqrt(omegab + omegac)/Math.sqrt(this.our.omega_b + this.our.omega_c);	// accurate 
+		var rotation_speed = our_rotation_speed*(this.omega_b.value + this.omega_c.value)/(this.our.omega_b + this.our.omega_c);	// wrong, but more visually appealing
 		if($('#rotation_curve')){
-			var omegab = this.omega_b.value;
-			var omegac = this.omega_c.value;
-			var current_rotation_speed = 0.7;
-			var rotation_speed = current_rotation_speed*Math.sqrt(omegab + omegac)/Math.sqrt(this.our.omega_b + this.our.omega_c);	// accurate 
-			var rotation_speed = current_rotation_speed*(omegab + omegac)/(this.our.omega_b + this.our.omega_c);	// false, but more fun
 			var img_content = '<img id="rotating-galaxy" src="media/img/Galaxy-2.svg" class="spin" data-speed="'+rotation_speed.toFixed(3)+'" width="50" height="50">';
-			if (rotation_speed == current_rotation_speed || (omegab == this.our.omega_b && omegac == this.our.omega_c)) {
+			if (rotation_speed == our_rotation_speed || (this.omega_b.value == this.our.omega_b && this.omega_c.value == this.our.omega_c) || (!this.sky.exactmatch && Math.abs(rotation_speed - our_rotation_speed) < speed_tolerance*our_rotation_speed)) {
 				$('#rotation_curve').html('Galaxies spin <b>just right</b>\t'+img_content);
 			}
-			else if (rotation_speed > current_rotation_speed) {
+			else if (rotation_speed > our_rotation_speed) {
 				$('#rotation_curve').html('Galaxies spin <b>too fast</b>\t'+img_content);
 			}
-			else if (rotation_speed < current_rotation_speed) {
+			else if (rotation_speed < our_rotation_speed) {
 				$('#rotation_curve').html('Galaxies spin <b>too slow</b>\t'+img_content);
 			}
 		}
+		var sim = this.similarity([this.omega_b.value,this.omega_c.value,this.omega_l.value],[this.our.omega_b,this.our.omega_c,this.our.omega_l]);
 		if($('#similarity')){
-			var sim = this.similarity([this.omega_b.value,this.omega_c.value,this.omega_l.value],[this.our.omega_b,this.our.omega_c,this.our.omega_l]);
 			var txt = "not like our universe";
 			if(sim > 0.60) txt = "a bit like our universe";
 			if(sim > 0.75) txt = "getting more like our universe";
@@ -1804,11 +1818,14 @@
 			$('#similarity').html('Universe similarity <span class="similarity property">'+Math.round(sim*100)+'%</span> - '+txt+'');
 		}
 		if($('#won')){
-			if (this.omega_b.value == this.our.omega_b && this.omega_c.value == this.our.omega_c && this.omega_l.value == this.our.omega_l) {
+			if ((this.omega_b.value == this.our.omega_b && this.omega_c.value == this.our.omega_c && this.omega_l.value == this.our.omega_l)
+				|| (!this.sky.exactmatch && Math.round(sim*100) >= 98 && age >= 13.6 && age <= 14.0 && curvature == 0 && Math.abs(rotation_speed - our_rotation_speed) < speed_tolerance*our_rotation_speed)) {
 				 $('#won').show();
 				 document.activeElement.blur();
 			}
-			else { $('#won').hide() };
+			else {
+				$('#won').hide();
+			};
 		}
 
 		$('span.omega_b').html(' = '+this.omega_b.value);
