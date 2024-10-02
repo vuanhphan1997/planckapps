@@ -41,3 +41,6 @@ Keyboard shortcuts
  - '3','4':             move 'Dark matter' slider left,right
  - '5','6':             move 'Dark Energy' slider left,right
  - 'u','d':             move up/down between sliders
+ - 's':                 start (randomly generate the unverse)
+ - 'n':                 toggle normal matter only
+ - 'k':                 toggle flatten
