@@ -258,7 +258,6 @@
 		// Show the contents again
 		this.el.children().show();
 
-		// Draw the data
 		this.draw();
 
 	}
@@ -304,6 +303,7 @@
 		// Draw the axes labels
 		this.chart.xLabel = this.chart.holder.text(l + w/2, t + h + b*0.5, "Scale on the sky").attr({fill: (this.opts.xaxis.label.color ? this.opts.xaxis.label.color : "black"),'font-size': this.opts.font,'font-family': this.opts.xaxis.label.font });
 		this.chart.yLabel = this.chart.holder.text(l*0.5, t+(h/2), "Anisotropy "+ell+"*("+ell+"+1)*C["+sub_ell+"]").attr({fill: (this.opts.yaxis.label.color ? this.opts.yaxis.label.color : "black"),'font-size': this.opts.font,'font-family': this.opts.yaxis.label.font }).rotate(270);
+		this.chart.ourLegend = this.chart.holder.text(l + w*0.75, t + h*0.25, "Our Universe").attr({fill: "#049CDB",'font-size': this.opts.font,'font-family': this.opts.xaxis.label.font });
 
 		// Draw angular labels on chart
 		if(this.opts.xaxis.ticks){
@@ -353,7 +353,7 @@
 	}
 
 	// Anything that needs regular updating on the power spectrum
-	PowerSpectrum.prototype.draw = function(){
+	PowerSpectrum.prototype.draw = function(iskeep=false,isclean=true,color="#E13F29"){
 
 		// Check we have somewhere to draw
 		if(!this.chart.holder) return this;
@@ -443,8 +443,14 @@
 
 			// Now we make sure we don't display any parts of the curve that are outside the plot area
 			var clip = (this.opts.offset.left+0.5)+','+(this.opts.offset.top-0.5)+','+this.opts.offset.width+','+this.opts.offset.height;
-			if(this.chart.line) this.chart.line.remove();
-			this.chart.line = this.chart.holder.path(p).attr({stroke: "#E13F29", "stroke-width": 3, "stroke-linejoin": "round","clip-rect":clip});
+			if (iskeep) {
+				if(isclean && this.chart.linekeep) this.chart.linekeep.remove();
+				this.chart.linekeep = this.chart.holder.path(p).attr({stroke: color, "stroke-width": 3, "stroke-linejoin": "round","clip-rect":clip});
+
+			} else {
+				if(isclean && this.chart.line) this.chart.line.remove();
+				this.chart.line = this.chart.holder.path(p).attr({stroke: color, "stroke-width": 3, "stroke-linejoin": "round","clip-rect":clip});
+			}
 
 		}
 
@@ -487,7 +493,7 @@
 	}
 
 	// Request the data file for the current Omega values (b,c,l) using the current Omega that has focus
-	PowerSpectrum.prototype.loadData = function(id,b,c,l,fn){
+	PowerSpectrum.prototype.loadData = function(id,b,c,l,fn,isour=false){
 
 		var file = "";
 
@@ -520,7 +526,7 @@
 				// Keep a copy of the result
 				this.json = data;
 				// Process the result
-				this.getData(id,b,c,l);
+				this.getData(id,b,c,l,isour);
 			},
 			error: function(e){
 				this.callback.context.error("We couldn't load the CMB fluctuations of this universe (&Omega;<sub>b</sub> = "+b+", &Omega;<sub>c</sub> = "+c+", &Omega;<sub>&Lambda;</sub> = "+l+"). That sucks. :-(");
@@ -536,7 +542,7 @@
 	}
 
 	// Get the data for the current Omega values (b,c,l) using the current Omega that has focus
-	PowerSpectrum.prototype.getData = function(id,b,c,l){
+	PowerSpectrum.prototype.getData = function(id,b,c,l,isour=false){
 
 		// If the values haven't changed we don't need to recalculate the data
 		if(b==this.omega.b && c==this.omega.c && l==this.omega.l) return;
@@ -590,9 +596,13 @@
 					// No data so draw a horizontal line
 					this.data = [[1,2500],[1,1]];
 				}
-
-				// Re-draw the data
-				this.draw();
+				
+				if(isour){
+					this.draw(true,false,"#049CDB");
+				}else{
+					// Re-draw the data
+					this.draw();
+				}
 			}
 
 		}else{
@@ -1418,7 +1428,9 @@
 
 		// Keep a copy of the starting values
 		this.our = { omega_b: 0.050, omega_c: 0.275, omega_l: 0.675, firstpeak: 220,firstpeakamp: 5291.5 };
+		inp.our = this.our;
 		this.thisround = { omega_b: this.omega_b.value, omega_c: this.omega_c.value, omega_l: this.omega_l.value };
+		this.wonhidden = false;
 
 		// Hide the About section if we aren't at that anchor
 		if(location.hash.substring(1) != "about"){
@@ -1454,6 +1466,7 @@
 				sim.omega_b.setValue(sim.our.omega_b);
 				sim.omega_c.setValue(sim.our.omega_c);
 				sim.omega_l.setValue(sim.our.omega_l);
+				sim.wonhidden = true;
 				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
 			}),
 			$('<a class="button matteronly" href="#" style="background-color: #E13F29">Normal matter only</a>').on('click',{me:this},function(e){
@@ -1496,6 +1509,13 @@
 				sim.omega_c.setValue(sim.thisround.omega_c);
 				sim.omega_l.setValue(sim.thisround.omega_l);
 				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
+			})
+		);
+
+		$('#close-win-screen').append(
+			$('<a class="button hidewon" href="#" style="background-color: #049CDB">Hide</a>').on('click',{me:this},function(e){
+				$('#won').hide();
+				sim.wonhidden = true;
 			})
 		);
 
@@ -1615,6 +1635,7 @@
 				}
 			}
 			else if(c=='s') {
+				// Set random values for the sliders
 				sim.omega_b.setRandom();
 				sim.omega_c.setRandom();
 				sim.omega_l.setRandom();
@@ -1656,6 +1677,10 @@
 				sim.omega_c.setValue(sim.thisround.omega_c);
 				sim.omega_l.setValue(sim.thisround.omega_l);
 				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
+			}
+			else if(c=='x') {
+				$('#won').hide();
+				sim.wonhidden = true;
 			}
 		});
 
@@ -1752,6 +1777,8 @@
 			this.ps.resize();
 		}
 
+		//Load our universe data
+		this.ps.loadData("omega_b",inp.our.omega_b,inp.our.omega_c,inp.our.omega_l,0,true);
 		// Set the Omega values to random options
 		this.omega_b.setRandom();
 		this.omega_c.setRandom();
@@ -1775,7 +1802,6 @@
 
 		if($('#map') && this.sky){
 			var v = Math.round(this.sky.canvas.canvas.outerWidth()/this.sky.maxang)+'px';
-			// $('#similarity').html(Number(this.sky.canvas.canvas.outerWidth()));
 			var p = ((this.sky.canvas.container.outerWidth()-this.sky.canvas.canvas.outerWidth())/2)+'px';
 			$('#map .label.scale').css({'margin-right':p,'width': v, 'height': v, 'line-height': v, 'border-radius': v });
 			$('#map .label.sim').css('margin-left',p);
@@ -1853,7 +1879,7 @@
 		// var rotation_speed = our_rotation_speed*Math.sqrt(omegab + omegac)/Math.sqrt(this.our.omega_b + this.our.omega_c);	// accurate 
 		var rotation_speed = our_rotation_speed*(this.omega_b.value + this.omega_c.value)/(this.our.omega_b + this.our.omega_c);	// wrong, but more visually appealing
 		if($('#rotation_curve')){
-			var img_content = '<img id="rotating-galaxy" src="media/img/Galaxy-2.svg" class="spin" data-speed="'+rotation_speed.toFixed(3)+'" width="50" height="50">';
+			var img_content = '<img id="rotating-galaxy" src="media/img/galaxy-1.png" class="spin" data-speed="'+rotation_speed.toFixed(3)+'" width="50" height="50">';
 			if (rotation_speed == our_rotation_speed || (this.omega_b.value == this.our.omega_b && this.omega_c.value == this.our.omega_c) || (!this.sky.exactmatch && Math.abs(rotation_speed - our_rotation_speed) < speed_tolerance*our_rotation_speed)) {
 				$('#rotation_curve').html('Galaxies spin <b>just right</b>\t'+img_content);
 			}
@@ -1871,16 +1897,17 @@
 			if(sim > 0.75) txt = "getting more like our universe";
 			if(sim > 0.94) txt = "very similar to our universe";
 			if(sim == 1) txt = "the same as our universe";
-			// $('#similarity').html('Universe similarity <span class="similarity property">'+Math.round(sim*100)+'%</span> - '+txt+'');
+			$('#similarity').html('Universe similarity <span class="similarity property">'+Math.round(sim*100)+'%</span> - '+txt+'');
 		}
 		if($('#won')){
-			if ((this.omega_b.value == this.our.omega_b && this.omega_c.value == this.our.omega_c && this.omega_l.value == this.our.omega_l)
-				|| (!this.sky.exactmatch && Math.round(sim*100) >= 98 && age >= 13.6 && age <= 14.0 && curvature == 0 && Math.abs(rotation_speed - our_rotation_speed) < speed_tolerance*our_rotation_speed)) {
+			if (!this.wonhidden && ((this.omega_b.value == this.our.omega_b && this.omega_c.value == this.our.omega_c && this.omega_l.value == this.our.omega_l)
+				|| (!this.sky.exactmatch && Math.round(sim*100) >= 98 && age >= 13.6 && age <= 14.0 && curvature == 0 && Math.abs(rotation_speed - our_rotation_speed) < speed_tolerance*our_rotation_speed))) {
 				 $('#won').show();
 				 document.activeElement.blur();
 			}
 			else {
 				$('#won').hide();
+				this.wonhidden = false;
 			};
 		}
 
