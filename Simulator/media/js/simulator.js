@@ -1874,10 +1874,11 @@
 			var content = baryon_content + DM_content + dark_energy_content;
 			$('#matter_energy').html('with '+content);
 		}
-		var our_rotation_speed = 0.7;
+		var our_rotation_speed = 2;
 		var speed_tolerance = 0.1;
 		// var rotation_speed = our_rotation_speed*Math.sqrt(omegab + omegac)/Math.sqrt(this.our.omega_b + this.our.omega_c);	// accurate 
-		var rotation_speed = our_rotation_speed*(this.omega_b.value + this.omega_c.value)/(this.our.omega_b + this.our.omega_c);	// wrong, but more visually appealing
+		// var rotation_speed = our_rotation_speed*(this.omega_b.value + this.omega_c.value)/(this.our.omega_b + this.our.omega_c);	// wrong, but more visually appealing
+		var rotation_speed = our_rotation_speed*((1 + this.omega_c.value/this.omega_b.value)/(1 + this.our.omega_c/this.our.omega_b));	// wrong, but more visually appealing
 		if($('#rotation_curve')){
 			var img_content = '<img id="rotating-galaxy" src="media/img/galaxy-1.png" class="spin" data-speed="'+rotation_speed.toFixed(3)+'" width="50" height="50">';
 			if (rotation_speed == our_rotation_speed || (this.omega_b.value == this.our.omega_b && this.omega_c.value == this.our.omega_c) || (!this.sky.exactmatch && Math.abs(rotation_speed - our_rotation_speed) < speed_tolerance*our_rotation_speed)) {
