@@ -444,7 +444,7 @@
 			// Now we make sure we don't display any parts of the curve that are outside the plot area
 			var clip = (this.opts.offset.left+0.5)+','+(this.opts.offset.top-0.5)+','+this.opts.offset.width+','+this.opts.offset.height;
 			if (iskeep) {
-				if(isclean && this.chart.linekeep) this.chart.linekeep.remove();
+				// if(isclean && this.chart.linekeep) this.chart.linekeep.remove();
 				this.chart.linekeep = this.chart.holder.path(p).attr({stroke: color, "stroke-width": 3, "stroke-linejoin": "round","clip-rect":clip});
 
 			} else {

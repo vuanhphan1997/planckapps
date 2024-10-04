@@ -140,8 +140,8 @@ body.fullscreen #powerspectrum { background-color: white; }
 
 #fft { display: none; }
 .columnspecific, #map, #fft {
-	width: 650px;
-	height: 650px;
+	width: 400px;
+	height: 400px;
 }
 #map, #fft {
 	color: black;
