@@ -1469,7 +1469,7 @@
 				sim.wonhidden = true;
 				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
 			}),
-			$('<a class="button matteronly" href="#" style="background-color: #E13F29">Normal matter only</a>').on('click',{me:this},function(e){
+			$('<a class="button matteronly" href="#" style="background-color: #E13F29">[A] Normal matter only</a>').on('click',{me:this},function(e){
 				e.preventDefault();
 				var sim = e.data.me;
 				//sim.omega_b.setValue(0.20);
@@ -1477,7 +1477,7 @@
 				sim.omega_l.setValue(0.00);
 				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
 			}),
-			$('<a class="button flatten" href="#" style="background-color: #ffc40d">Flatten</a>').on('click',{me:this},function(e){
+			$('<a class="button flatten" href="#" style="background-color: #ffc40d">[B] Flatten</a>').on('click',{me:this},function(e){
 				e.preventDefault();
 				var sim = e.data.me;
 				var ob = sim.omega_b.value;
@@ -1502,7 +1502,7 @@
 				}
 				sim.ps.loadData('omega_b',sim.omega_b.value,sim.omega_c.value,sim.omega_l.value);
 			}),
-			$('<a class="button restart" href="#" style="background-color: #46a546">Restart</a>').on('click',{me:this},function(e){
+			$('<a class="button restart" href="#" style="background-color: #46a546">[Y] Start over</a>').on('click',{me:this},function(e){
 				e.preventDefault();
 				var sim = e.data.me;
 				sim.omega_b.setValue(sim.thisround.omega_b);
@@ -1513,7 +1513,7 @@
 		);
 
 		$('#close-win-screen').append(
-			$('<a class="button hidewon" href="#" style="background-color: #049CDB">Hide</a>').on('click',{me:this},function(e){
+			$('<a class="button hidewon" href="#" style="background-color: #049CDB">[X] Continue</a>').on('click',{me:this},function(e){
 				$('#won').hide();
 				sim.wonhidden = true;
 			})
@@ -1741,20 +1741,20 @@
 		setInterval(function(){
 			var el = document.getElementById("rotating-galaxy");
 			var speed = Number(el.dataset.speed);
-			if(degree > 360){
-				degree = degree - 360;
+			if(galaxy_degree > 360){
+				galaxy_degree = galaxy_degree - 360;
 				return;
 			}
-			if(degree < 0){
-				degree = degree + 360;
+			if(galaxy_degree < 0){
+				galaxy_degree = galaxy_degree + 360;
 				return;
 			}
-			el.style.webkitTransform = 'rotate(' + degree + 'deg)';
-			el.style.mozTransform = 'rotate(' + degree + 'deg)';
-			el.style.msTransform = 'rotate(' + degree + 'deg)';
-			el.style.oTransform = 'rotate(' + degree + 'deg)';
-			el.style.transform = 'rotate(' + degree + 'deg)';
-			degree = degree + speed;
+			el.style.webkitTransform = 'rotate(' + galaxy_degree + 'deg)';
+			el.style.mozTransform = 'rotate(' + galaxy_degree + 'deg)';
+			el.style.msTransform = 'rotate(' + galaxy_degree + 'deg)';
+			el.style.oTransform = 'rotate(' + galaxy_degree + 'deg)';
+			el.style.transform = 'rotate(' + galaxy_degree + 'deg)';
+			galaxy_degree = galaxy_degree + speed;
 			return;
 		}, 1);
 
