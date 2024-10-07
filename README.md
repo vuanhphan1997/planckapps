@@ -48,3 +48,34 @@ Keyboard shortcuts
  - 'k':                 flatten
  - 'x':                 close "Win" screen after it appears
 
+Suggested hardware
+------------------
+
+* At the Nikhef Science Day 2024, we used a "Rii GP100 SNES Retro USB Super Nintendo Controller"
+  (amazon link [https://www.amazon.nl/Rii-Nintendo-Controller-Raspberry-Windows/dp/B073Z9MKKH/])
+  to let people interact with the display.
+* Two of these game controllers (see picture at `Hardware/snes_usb_controller.jpg`)
+  are stored at the Nikhef Communications department.
+* We recommend interfacing them using the `antimicro` tool.
+  - Ubuntu, in Canonical's Universe component: https://launchpad.net/ubuntu/focal/+package/antimicro)
+  - Windows: https://apps.microsoft.com/detail/9n1fcfq6p5lw?hl=en-us&gl=DE
+* Based on our experience, `antimicro` will recognize the controllers
+  right away after plugging them in.
+* Load the config file at `Hardware/gamepad_config_cmb_display.joystick`
+  for a readymade setup that maps controller buttons to the shortcuts above.
+
+The final controller commands will be as follows:
+
+- Up/Down on gamepad:   move up/down between sliders
+- Left/Right buttons (at the back of the controller):    move current slider left,right
+- Start:                start (randomly generate the unverse)
+- A (red):              normal matter only
+- B (yellow):           flatten
+- Y (green):            restart current game
+- X (blue):             close "Win" screen after it appears
+
+If desired, the Left/Right directions of the gamepad can also be used
+to toggle between sliders, but our experience is that this leads
+to accidental presses of the Up/Down directions, as well.
+(This may be avoided by adjusting the sensitivity thresholds in `antimicro`,
+but we haven't been able to find a satisfactory setting here.)
