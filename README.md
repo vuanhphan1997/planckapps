@@ -12,6 +12,10 @@ Requires:
  - A reasonably modern browser
  - To run locally, ensure browser can access local files
    - e.g. for Chrome, set flag --allow-file-access-from-files
+   - the same flag works out of the box for Chromium
+     when launching it from a terminal
+   - while there are reocmmended steps to follow to enable local files
+     in firefox, they didn't work for us, so we recommend just using Chrome/Chromium
 
 Written by Stuart Lowe & Chris North. Modified by Anh Vu Phan
 
